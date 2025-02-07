@@ -2,6 +2,9 @@ import ContactForm from "@/components/ContactForm";
 
 // This page now uses the 'await' keyword for fetching dynamic params before using them
 export default async function EditContactPage({ params }: { params: { id: string } }) {
+
+    
+
   try {
     // Await params.id before making the API request
     const { id } = await params;  // Ensure we use the awaited param here
