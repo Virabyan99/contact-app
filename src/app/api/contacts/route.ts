@@ -42,3 +42,38 @@ export async function GET(req: Request) {
     );
   }
 }
+
+// ✅ Handle Contact Creation (POST)
+export async function POST(req: Request) {
+  try {
+    const newContact = await req.json();
+
+    // 🔹 Basic validation: Ensure `name` is provided
+    if (!newContact.name || newContact.name.trim() === "") {
+      return NextResponse.json(
+        { error: "Contact name is required." },
+        { status: 400 }
+      );
+    }
+
+    // 🔹 Send the new contact to your backend
+    const response = await fetch("http://localhost:8787/api/contacts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newContact),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create contact.");
+    }
+
+    const createdContact = await response.json();
+
+    return NextResponse.json(createdContact, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to create contact." },
+      { status: 500 }
+    );
+  }
+}
