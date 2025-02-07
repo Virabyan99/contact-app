@@ -31,13 +31,12 @@ const ContactListPage: React.FC = () => {
 
   const fetchContacts = async () => {
     try {
-      const queryParams = new URLSearchParams({
-        search,
-        sort,
-        filter: filter === "all" ? "" : filter,
-      });
+      const queryParams = new URLSearchParams();
+      if (search) queryParams.append("search", search);
+      if (sort) queryParams.append("sort", sort);
+      if (filter && filter !== "all") queryParams.append("filter", filter);
   
-      const url = `/api/contacts?${queryParams.toString()}`; // ✅ Correct API route
+      const url = `/api/contacts?${queryParams.toString()}`; // ✅ Ensure correct API route
       console.log("Fetching data from:", url); // Debug log
   
       const res = await fetch(url);
@@ -58,7 +57,7 @@ const ContactListPage: React.FC = () => {
     }
   };
   
-  
+
   useEffect(() => {
     setLoading(true)
     fetchContacts()
@@ -75,21 +74,25 @@ const ContactListPage: React.FC = () => {
             type="text"
             placeholder="Search by name or email"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              fetchContacts() // ✅ Fetch data immediately
+            }}
             className="flex-1"
           />
+
           <Select
-            value={filter}
-            onValueChange={(value) => setFilter(value || null)}>
+            value={sort}
+            onValueChange={(value) => {
+              setSort(value)
+              fetchContacts() // ✅ Fetch data immediately
+            }}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Filter by category" />
+              <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">All</SelectItem>{' '}
-              {/* Use a non-empty value like "none" */}
-              <SelectItem value="friend">Friend</SelectItem>
-              <SelectItem value="family">Family</SelectItem>
-              <SelectItem value="colleague">Colleague</SelectItem>
+              <SelectItem value="created_at_desc">Newest</SelectItem>
+              <SelectItem value="created_at_asc">Oldest</SelectItem>
             </SelectContent>
           </Select>
 
