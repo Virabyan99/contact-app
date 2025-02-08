@@ -1,8 +1,7 @@
 import NextAuth from "next-auth"
 import { authOptions } from "@/lib/auth"
 
-export const runtime = 'edge';
-
+export const runtime = 'nodejs'; // Force Node.js runtime for this route
 
 const handler = NextAuth(authOptions)
 
